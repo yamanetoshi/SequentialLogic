@@ -16,5 +16,21 @@ CHIP PC {
     OUT out[16];
 
     PARTS:
-    // Put your code here:
+    Register(in=in1, load=load3, out=rout);
+
+    Or(a=load, b=false, out=load1);
+    Or(a=inc, b=load1, out=load2);
+    Or(a=reset, b=load2, out=load3);
+
+    ALU(x=rout, y=false, zx=true, nx=false, zy=true, ny=false, f=true, no=false,
+        out=zero, zr=of1, ng=of2);
+    ALU(x=rout, y=false, zx=false, nx=true, zy=true, ny=true, f=true, no=true,
+        out=plus1, zr=of3, ng=of4);
+
+    Or16(a=in, b=zero, out=orout);
+
+    Mux8Way16(a=orout, b=plus1, c=orout, d=orout, e=zero, f=zero, g=zero, h=zero,
+              sel[0]=inc, sel[1]=load, sel[2]=reset, out=in1);
+
+    Or16(a=rout, b=false, out=out);
 }
